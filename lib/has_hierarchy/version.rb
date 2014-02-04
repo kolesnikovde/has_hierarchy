@@ -1,0 +1,3 @@
+module HasHierarchy
+  VERSION = '0.0.1'
+end
