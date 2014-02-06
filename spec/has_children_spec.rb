@@ -11,53 +11,58 @@ describe HasChildren do
     @quux = @qux.children.create!(name: 'quux')
   end
 
-  let(:tree) do
-    {
-      @foo => {},
-      @bar => {
-        @qux => {
-          @quux => {}
-        },
-        @baz => {}
-      }
-    }
-  end
-
-  let(:alphabetic_tree) do
-    {
-      @bar => {
-        @baz => {},
-        @qux => {
-          @quux => {}
-        }
-      },
-      @foo => {}
-    }
-  end
-
-  let(:roots) do
-    tree.keys
-  end
-
   describe 'node path column' do
     it 'defaults to "node_path"' do
       expect(Item.node_path_column).to eq(:node_path)
     end
   end
 
-  describe '.arrange_tree' do
+  describe '.tree' do
     it 'arranges tree' do
-      expect(Item.tree).to be_arranged_like(tree)
+      expect(Item.tree).to be_arranged_like({
+        @foo => {},
+        @bar => {
+          @qux => {
+            @quux => {}
+          },
+          @baz => {}
+        }
+      })
     end
 
     it 'allows custom order' do
-      expect(Item.alphabetic.tree).to be_arranged_like(alphabetic_tree)
+      expect(Item.alphabetic.tree).to be_arranged_like({
+        @bar => {
+          @baz => {},
+          @qux => {
+            @quux => {}
+          }
+        },
+        @foo => {}
+      })
     end
   end
 
   describe '.roots' do
     it 'returns roots' do
-      expect(Item.roots).to match_array(roots)
+      expect(Item.roots).to match_array([ @foo, @bar ])
+    end
+  end
+
+  describe '#move_children_to_parent' do
+    subject(:bar) { @bar }
+
+    before { @bar.move_children_to_parent }
+
+    it 'changes children parent' do
+      expect(Item.tree).to be_arranged_like({
+        @foo => {},
+        @bar => {},
+        @qux => {
+          @quux => {}
+        },
+        @baz => {}
+      })
     end
   end
 

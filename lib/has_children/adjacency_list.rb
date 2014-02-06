@@ -17,16 +17,23 @@ module HasChildren
       end
     end
 
-    def siblings
-      tree_scope.where(siblings_conditions)
-    end
-
     def root?
       parent_id.nil?
     end
 
     def sibling_of? node
       parent_id == node.parent_id and id != node.id
+    end
+
+    def siblings
+      tree_scope.where(siblings_conditions)
+    end
+
+    def move_children_to_parent
+      children.each do |c|
+        c.parent = self.parent
+        c.save
+      end
     end
 
     protected
