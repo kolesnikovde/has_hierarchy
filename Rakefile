@@ -2,6 +2,8 @@ require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new(:spec)
 
+spec = Gem::Specification.load('has_children.gemspec')
+
 task default: :spec
 
 desc 'Build the .gem file'
