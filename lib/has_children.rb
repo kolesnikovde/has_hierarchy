@@ -26,12 +26,19 @@ module HasChildren
 
     scope :roots, ->{ where(parent_id: nil) }
 
-    if tree_scope = options[:scope]
-      scope :tree_scope, ->(instance) do
-        where(Hash[Array(tree_scope).map{ |s| [ s, instance[s] ] }])
-      end
+    define_tree_scope(options[:scope])
+  end
+
+  protected
+
+  def define_tree_scope tree_scope
+    scope :tree_scope, case tree_scope
+    when nil
+      self
+    when Proc
+      tree_scope
     else
-      scope :tree_scope, ->(instance) { self }
+      ->(model) { where(Hash[Array(tree_scope).map{ |s| [ s, model[s] ] }]) }
     end
   end
 end
