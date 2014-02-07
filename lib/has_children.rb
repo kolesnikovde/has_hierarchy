@@ -33,10 +33,10 @@ module HasChildren
 
   def define_tree_scope tree_scope
     scope :tree_scope, case tree_scope
-    when nil
-      self
     when Proc
       tree_scope
+    when nil
+      ->(model){ self }
     else
       ->(model) { where(Hash[Array(tree_scope).map{ |s| [ s, model[s] ] }]) }
     end

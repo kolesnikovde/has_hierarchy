@@ -5,7 +5,7 @@ describe HasChildren do
     @foo = Item.create!(name: 'foo', category: 'foo')
     @bar = Item.create!(name: 'bar', category: 'bar')
 
-    @qux = @bar.children.create!(name: 'qux')
+    @qux = @bar.children.create!(name: 'qux', category: 'bar')
     @baz = @bar.children.create!(name: 'baz')
 
     @quux = @qux.children.create!(name: 'quux')
@@ -216,12 +216,28 @@ describe HasChildren do
   end
 
   describe 'scoping' do
-    before(:all) do
-      Item.has_children scope: :category
+    shared_examples 'scoped' do
+      its(:siblings) { should be_empty }
     end
 
-    it 'scoped by category' do
-      expect(@foo.siblings).to be_empty
+    describe 'via attributes' do
+      before(:all) do
+        Item.has_children scope: :category
+      end
+
+      subject { @bar }
+
+      it_behaves_like 'scoped'
+    end
+
+    describe 'via proc' do
+      before(:all) do
+        Item.has_children scope: ->(i){ Item.where(category: i.category) }
+      end
+
+      subject { @bar }
+
+      it_behaves_like 'scoped'
     end
   end
 end
