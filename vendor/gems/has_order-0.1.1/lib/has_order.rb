@@ -2,8 +2,6 @@ require 'active_record'
 require 'has_order/version'
 
 module HasOrder
-  SHIFT_INTERVAL = 1000
-
   def has_order options = {}
     extend  ClassMethods
     include InstanceMethods
@@ -12,15 +10,13 @@ module HasOrder
       options[:position_column] || :position
     end
 
-    before_create :set_default_position
-
-    if list_scope = options[:scope]
-      scope :list_scope, ->(instance) do
-        where(Hash[Array(list_scope).map { |s| [ s, instance[s] ] }])
-      end
-    else
-      scope :list_scope, ->(instance){ self }
+    cattr_accessor :position_shift_interval do
+      options[:shift_interval] || 1000
     end
+
+    before_save :set_default_position, if: :set_default_position?
+
+    define_list_scope(options[:scope])
   end
 
   module ClassMethods
@@ -34,11 +30,11 @@ module HasOrder
 
     def shift!
       col = position_column
-      update_all("#{col} = #{col} + #{SHIFT_INTERVAL}")
+      update_all("#{col} = #{col} + #{position_shift_interval}")
     end
 
     def next_position
-      maximum(position_column).to_i + SHIFT_INTERVAL
+      maximum(position_column).to_i + position_shift_interval
     end
   end
 
@@ -75,6 +71,17 @@ module HasOrder
       higher.ordered.first
     end
 
+    def move_to pos
+      ActiveRecord::Base.transaction do
+        if node = list_scope.at(pos).first
+          node.and_higher.shift!
+        end
+
+        self.position = pos
+        save!
+      end
+    end
+
     def move_before node
       node_pos = node.position
       pos = node_pos > 0 ? node_pos - 1 : node_pos
@@ -85,7 +92,8 @@ module HasOrder
           node.and_higher.shift!
         end
 
-        move_to(pos)
+        self.position = pos
+        save!
       end
     end
 
@@ -98,7 +106,8 @@ module HasOrder
           node.higher.shift!
         end
 
-        move_to(pos)
+        self.position = pos
+        save!
       end
     end
 
@@ -108,11 +117,6 @@ module HasOrder
       self.class.list_scope(self)
     end
 
-    def move_to pos
-      self.position = pos
-      self.save!
-    end
-
     def where_position cmp
       col = self.class.arel_table[position_column]
       list_scope.where(col.send(cmp, position))
@@ -120,6 +124,23 @@ module HasOrder
 
     def set_default_position
       self.position = list_scope.next_position
+    end
+
+    def set_default_position?
+      position.nil?
+    end
+  end
+
+  protected
+
+  def define_list_scope list_scope
+    scope :list_scope, case list_scope
+    when Proc
+      list_scope
+    when nil
+      ->(model) { self }
+    else
+      ->(model) { where(Hash[Array(list_scope).map{ |s| [ s, model[s] ] }]) }
     end
   end
 end

@@ -5,38 +5,10 @@ describe HasChildren do
     @foo = Item.create!(name: 'foo', category: 'foo')
     @bar = Item.create!(name: 'bar', category: 'bar')
 
-    @qux = @bar.children.create!(name: 'qux')
+    @qux = @bar.children.create!(name: 'qux', category: 'bar')
     @baz = @bar.children.create!(name: 'baz')
 
     @quux = @qux.children.create!(name: 'quux')
-  end
-
-  let(:tree) do
-    {
-      @foo => {},
-      @bar => {
-        @qux => {
-          @quux => {}
-        },
-        @baz => {}
-      }
-    }
-  end
-
-  let(:alphabetic_tree) do
-    {
-      @bar => {
-        @baz => {},
-        @qux => {
-          @quux => {}
-        }
-      },
-      @foo => {}
-    }
-  end
-
-  let(:roots) do
-    tree.keys
   end
 
   describe 'node path column' do
@@ -45,19 +17,52 @@ describe HasChildren do
     end
   end
 
-  describe '.arrange_tree' do
+  describe '.tree' do
     it 'arranges tree' do
-      expect(Item.tree).to be_arranged_like(tree)
+      expect(Item.tree).to be_arranged_like({
+        @foo => {},
+        @bar => {
+          @qux => {
+            @quux => {}
+          },
+          @baz => {}
+        }
+      })
     end
 
     it 'allows custom order' do
-      expect(Item.alphabetic.tree).to be_arranged_like(alphabetic_tree)
+      expect(Item.alphabetic.tree).to be_arranged_like({
+        @bar => {
+          @baz => {},
+          @qux => {
+            @quux => {}
+          }
+        },
+        @foo => {}
+      })
     end
   end
 
   describe '.roots' do
     it 'returns roots' do
-      expect(Item.roots).to match_array(roots)
+      expect(Item.roots).to match_array([ @foo, @bar ])
+    end
+  end
+
+  describe '#move_children_to_parent' do
+    subject(:bar) { @bar }
+
+    before { @bar.move_children_to_parent }
+
+    it 'changes children parent' do
+      expect(Item.tree).to be_arranged_like({
+        @foo => {},
+        @bar => {},
+        @qux => {
+          @quux => {}
+        },
+        @baz => {}
+      })
     end
   end
 
@@ -211,12 +216,28 @@ describe HasChildren do
   end
 
   describe 'scoping' do
-    before(:all) do
-      Item.has_children scope: :category
+    shared_examples 'scoped' do
+      its(:siblings) { should be_empty }
     end
 
-    it 'scoped by category' do
-      expect(@foo.siblings).to be_empty
+    describe 'via attributes' do
+      before(:all) do
+        Item.has_children scope: :category
+      end
+
+      subject { @bar }
+
+      it_behaves_like 'scoped'
+    end
+
+    describe 'via proc' do
+      before(:all) do
+        Item.has_children scope: ->(i){ Item.where(category: i.category) }
+      end
+
+      subject { @bar }
+
+      it_behaves_like 'scoped'
     end
   end
 end

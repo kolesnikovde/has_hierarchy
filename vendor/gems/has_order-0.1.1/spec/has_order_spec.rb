@@ -110,6 +110,21 @@ describe HasOrder do
     its(:next) { should be_nil }
   end
 
+  describe '#move_to' do
+    it 'shifts item and higher items when the position is occupied' do
+      @foo.update_attribute(:position, 1)
+      @bar.update_attribute(:position, 2)
+      @baz.update_attribute(:position, 3)
+      @qux.update_attribute(:position, 4)
+
+      @qux.move_to(@bar.position)
+
+      reload_items
+
+      expect(Item.ordered).to eq([ @foo, @qux, @bar, @baz ])
+    end
+  end
+
   describe '#move_before' do
     it 'decreases item position' do
       prev_qux_position = @qux.position
@@ -155,13 +170,29 @@ describe HasOrder do
   end
 
   describe 'scoping' do
-    before(:all) do
-      Item.has_order scope: :category
+    shared_examples 'scoped' do
+      its(:higher)    { should be_empty }
+      its(:and_lower) { should match_array([ @bar, @foo ]) }
     end
 
-    it 'scoped by category' do
-      expect(@foo.higher).to eq([ @bar ])
-      expect(@qux.and_lower.ordered).to eq([ @baz, @qux ])
+    describe 'via attributes' do
+      before(:all) do
+        Item.has_order scope: :category
+      end
+
+      subject { @bar }
+
+      it_behaves_like 'scoped'
+    end
+
+    describe 'via proc' do
+      before(:all) do
+        Item.has_order scope: ->(i){ Item.where(category: i.category) }
+      end
+
+      subject { @bar }
+
+      it_behaves_like 'scoped'
     end
   end
 end

@@ -3,6 +3,6 @@ ActiveRecord::Schema.define(version: 0) do
     t.string :name
     t.string :category
 
-    t.integer :position, default: 0
+    t.integer :position
   end
 end
