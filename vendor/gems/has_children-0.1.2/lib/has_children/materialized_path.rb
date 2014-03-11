@@ -16,15 +16,11 @@ module HasChildren
     # Overriden in order to resolve columnless root association,
     # see ActiveRecord::Associations::BelongsToAssociation#foreign_key_present?
     def [] key
-      key == :root_id ? root_id : super
+      key.to_sym == :root_id ? root_id : super
     end
 
     def root_id
       root? ? nil : ancestor_ids.first
-    end
-
-    def root
-      root? ? nil : tree_scope.find(root_id)
     end
 
     def root_of? node
