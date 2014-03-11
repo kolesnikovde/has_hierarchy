@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2
+
+- Added root association.
+- Added `#root_id`.
+- Added `#root_of?`
+- Added `#parent_of?`
+
 ## 0.1.1
 
 - Fixed scopes (always using lambdas).
