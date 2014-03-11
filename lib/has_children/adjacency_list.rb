@@ -21,6 +21,10 @@ module HasChildren
       parent_id.nil?
     end
 
+    def parent_of? node
+      node.parent_id == id if id.present?
+    end
+
     def sibling_of? node
       parent_id == node.parent_id and id != node.id
     end

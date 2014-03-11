@@ -3,6 +3,8 @@ module HasChildren
     extend ActiveSupport::Concern
 
     included do
+      belongs_to :root, class_name: self.name
+
       before_create :populate_node_path
       before_update :apply_parent_change_to_children, if: :parent_id_changed?
     end
@@ -11,8 +13,18 @@ module HasChildren
       ancestor_ids.size
     end
 
-    def root
-      root? ? self : tree_scope.find(ancestor_ids.first)
+    # Overriden in order to resolve columnless root association,
+    # see ActiveRecord::Associations::BelongsToAssociation#foreign_key_present?
+    def [] key
+      key.to_sym == :root_id ? root_id : super
+    end
+
+    def root_id
+      root? ? nil : ancestor_ids.first
+    end
+
+    def root_of? node
+      node.root_id == id if id.present?
     end
 
     def ancestor_ids
@@ -23,20 +35,20 @@ module HasChildren
       tree_scope.where(ancestors_conditions)
     end
 
-    def descendants
-      tree_scope.where(descendants_conditions)
-    end
-
-    def subtree
-      tree_scope.where(subtree_conditions)
-    end
-
     def ancestor_of? node
       node.ancestor_ids.include?(id)
     end
 
+    def descendants
+      tree_scope.where(descendants_conditions)
+    end
+
     def descendant_of? node
       ancestor_ids.include?(node.id)
+    end
+
+    def subtree
+      tree_scope.where(subtree_conditions)
     end
 
     protected

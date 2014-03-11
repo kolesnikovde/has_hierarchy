@@ -4,10 +4,8 @@ describe HasChildren do
   before(:each) do
     @foo = Item.create!(name: 'foo', category: 'foo')
     @bar = Item.create!(name: 'bar', category: 'bar')
-
     @qux = @bar.children.create!(name: 'qux', category: 'bar')
     @baz = @bar.children.create!(name: 'baz')
-
     @quux = @qux.children.create!(name: 'quux')
   end
 
@@ -78,7 +76,9 @@ describe HasChildren do
 
     its(:depth) { should be_zero }
 
-    its(:root) { should eq(subject) }
+    its(:root_id) { should be_nil }
+
+    its(:root) { should be_nil }
 
     its(:parent) { should be_nil }
 
@@ -104,23 +104,21 @@ describe HasChildren do
       end
     end
 
-    describe '#descendant_of?' do
-      it 'false for self' do
-        expect(subject.descendant_of?(subject)).to be_false
-      end
+    [ :root_of?, :ancestor_of? ].each do |method|
+      describe "##{method}" do
+        it 'true for child' do
+          expect(subject.send(method, children.first)).to be_true
+        end
 
-      it 'false for child' do
-        expect(subject.descendant_of?(children.first)).to be_false
+        it 'true for descendant' do
+          expect(subject.send(method, descendant)).to be_true
+        end
       end
     end
 
-    describe '#ancestor_of?' do
+    describe '#parent_of?' do
       it 'true for child' do
-        expect(subject.ancestor_of?(children.first)).to be_true
-      end
-
-      it 'true for descendant' do
-        expect(subject.ancestor_of?(descendant)).to be_true
+        expect(subject.parent_of?(children.first)).to be_true
       end
     end
 
@@ -135,6 +133,16 @@ describe HasChildren do
         expect(subject.sibling_of?(subject)).to be_false
       end
     end
+
+    describe '#descendant_of?' do
+      it 'false for self' do
+        expect(subject.descendant_of?(subject)).to be_false
+      end
+
+      it 'false for child' do
+        expect(subject.descendant_of?(children.first)).to be_false
+      end
+    end
   end
 
   context 'leaf' do
@@ -146,6 +154,8 @@ describe HasChildren do
 
     it { should_not be_root }
 
+    its(:root_id) { should eq(root.id) }
+
     its(:root) { should eq(root) }
 
     its(:depth) { should eq(ancestors.count) }
@@ -156,15 +166,20 @@ describe HasChildren do
 
     its(:ancestors) { should eq(ancestors) }
 
-    describe '#descendants' do
-      it 'is empty' do
-        expect(subject.descendants).to be_empty
-      end
-    end
+    its(:descendants) { should be_empty }
 
-    describe '#subtree' do
-      it 'contains only that item' do
-        expect(subject.subtree).to eq([ subject ])
+    its(:subtree) { should eq([ subject ]) }
+
+    [ :root_of?, :ancestor_of?, :parent_of? ].each do |method|
+      describe "##{method}" do
+        it 'false for self' do
+          expect(subject.send(method, subject)).to be_false
+        end
+
+        it 'false for ancestors' do
+          expect(subject.send(method, root)).to be_false
+          expect(subject.send(method, parent)).to be_false
+        end
       end
     end
 
@@ -175,16 +190,6 @@ describe HasChildren do
 
       it 'true for ancestor' do
         expect(subject.descendant_of?(root)).to be_true
-      end
-    end
-
-    describe '#ancestor_of?' do
-      it 'false for self' do
-        expect(subject.ancestor_of?(subject)).to be_false
-      end
-
-      it 'false for parent' do
-        expect(subject.ancestor_of?(parent)).to be_false
       end
     end
   end
