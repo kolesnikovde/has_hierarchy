@@ -7,6 +7,9 @@ describe HasChildren do
     @qux = @bar.children.create!(name: 'qux', category: 'bar')
     @baz = @bar.children.create!(name: 'baz')
     @quux = @qux.children.create!(name: 'quux')
+
+    @bar.reload
+    @qux.reload
   end
 
   describe 'node path column' do
@@ -72,6 +75,7 @@ describe HasChildren do
     let(:descendant) { @quux }
     let(:descendants) { children + [ descendant ] }
 
+    it { should_not be_leaf }
     it { should be_root }
 
     its(:depth) { should be_zero }
@@ -152,6 +156,7 @@ describe HasChildren do
     let(:parent) { @qux }
     let(:ancestors) { [ @bar, @qux ] }
 
+    it { should be_leaf }
     it { should_not be_root }
 
     its(:root_id) { should eq(root.id) }

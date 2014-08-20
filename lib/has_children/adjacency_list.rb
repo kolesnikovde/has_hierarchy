@@ -17,6 +17,14 @@ module HasChildren
       end
     end
 
+    def leaf?
+      if counter_cache = has_children_options[:counter_cache]
+        self[counter_cache] == 0
+      else
+        children.empty?
+      end
+    end
+
     def root?
       parent_id.nil?
     end

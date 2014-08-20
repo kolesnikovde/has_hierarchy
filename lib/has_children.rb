@@ -11,13 +11,17 @@ module HasChildren
       include MaterializedPath
     end
 
+    cattr_accessor :has_children_options do
+      options
+    end
+
     cattr_accessor :node_path_column do
       :node_path if options[:node_path_column].nil?
     end
 
     belongs_to :parent, class_name: self.name,
                         inverse_of: :children,
-                        counter_cache: (options[:counter_cache] || false)
+                        counter_cache: options[:counter_cache]
 
     has_many :children, class_name: self.name,
                         foreign_key: :parent_id,
