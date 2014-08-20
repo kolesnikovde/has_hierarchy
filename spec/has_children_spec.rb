@@ -51,7 +51,7 @@ describe HasChildren do
   end
 
   describe '#move_children_to_parent' do
-    subject(:bar) { @bar }
+    subject { @bar }
 
     before { @bar.move_children_to_parent }
 
@@ -196,6 +196,14 @@ describe HasChildren do
       it 'true for ancestor' do
         expect(subject.descendant_of?(root)).to be_true
       end
+    end
+  end
+
+  describe 'root association' do
+    it 'can be preloaded' do
+      item = Item.includes(:root).first
+
+      expect(item.association(:root)).to be_loaded
     end
   end
 
