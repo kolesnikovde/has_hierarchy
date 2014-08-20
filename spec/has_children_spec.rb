@@ -197,12 +197,21 @@ describe HasChildren do
   describe 'parent change' do
     subject { @baz }
 
+    let(:prev_parent) { @baz.parent }
     let(:new_parent) { @foo }
     let(:new_ancestors) { [ @foo ] }
 
     before do
       subject.parent = new_parent
       subject.save!
+    end
+
+    it 'updates counter_cache' do
+      prev_parent.reload
+      new_parent.reload
+
+      expect(prev_parent.children_count).to eq(prev_parent.children.count)
+      expect(new_parent.children_count).to eq(new_parent.children.count)
     end
 
     it 'changes ancestors' do
