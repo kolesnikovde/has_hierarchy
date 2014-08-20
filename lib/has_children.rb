@@ -22,7 +22,7 @@ module HasChildren
     has_many :children, class_name: self.name,
                         foreign_key: :parent_id,
                         inverse_of: :parent,
-                        dependent: (options[:orphan_strategy] || :destroy)
+                        dependent: options[:dependent]
 
     scope :roots, ->{ where(parent_id: nil) }
 
