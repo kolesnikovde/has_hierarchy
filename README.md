@@ -18,7 +18,7 @@ And then execute:
 
     $ rails g migration Item name:string \
                              parent:belongs_to \
-                             position:string \
+                             position:integer \
                              node_path:string
 
 ```ruby
