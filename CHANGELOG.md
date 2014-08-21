@@ -1,17 +1,16 @@
 # Changelog
 
-## TODO
+## 0.1.3
 
-- Add README.md.
-- Update .gitignore.
-- Update rake tasks.
-
-## current
-
+- Added README.md.
 - Added `#leaf?`.
 - Added `has_children_options` accessor.
 - Added counter cache and root scope specs.
-- "orphan_strategy" option renamed to "dependent".
+- Updated "orphan_strategy" option (renamed to "dependent").
+- Updated rake tasks.
+- Updated .gitignore.
+- Updated codestyle.
+- Fixed rspec deprication warnings.
 
 ## 0.1.2
 
