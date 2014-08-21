@@ -4,7 +4,8 @@ require 'has_children/adjacency_list'
 require 'has_children/materialized_path'
 
 module HasChildren
-  # options - :scope            - optional, proc, symbol or an array of symbols.
+  # options - Options hash.
+  #           :scope            - optional, proc, symbol or an array of symbols.
   #           :node_path_column - optional, default 'node_path'.
   #           :counter_cache    - optional, :counter_cache option for parent association.
   #           :dependent        - optional, :dependent option for children association.
