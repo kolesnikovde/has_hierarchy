@@ -15,7 +15,7 @@ module HasChildren
 
     # Overriden in order to resolve columnless root association,
     # see ActiveRecord::Associations::BelongsToAssociation#foreign_key_present?
-    def [] key
+    def [](key)
       key.to_sym == :root_id ? root_id : super
     end
 
@@ -23,7 +23,7 @@ module HasChildren
       root? ? nil : ancestor_ids.first
     end
 
-    def root_of? node
+    def root_of?(node)
       node.root_id == id if id.present?
     end
 
@@ -35,7 +35,7 @@ module HasChildren
       tree_scope.where(ancestors_conditions)
     end
 
-    def ancestor_of? node
+    def ancestor_of?(node)
       node.ancestor_ids.include?(id)
     end
 
@@ -43,7 +43,7 @@ module HasChildren
       tree_scope.where(descendants_conditions)
     end
 
-    def descendant_of? node
+    def descendant_of?(node)
       ancestor_ids.include?(node.id)
     end
 
@@ -57,7 +57,7 @@ module HasChildren
       self[node_path_column]
     end
 
-    def node_path= path
+    def node_path=(path)
       self[node_path_column] = path
     end
 
@@ -73,7 +73,7 @@ module HasChildren
       { id: ancestor_ids }
     end
 
-    def descendants_conditions path = nil
+    def descendants_conditions(path = nil)
       path ||= path_for_children_nodes
 
       self.class.arel_table[node_path_column].matches("#{path}%")

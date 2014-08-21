@@ -4,7 +4,7 @@ require 'has_children/adjacency_list'
 require 'has_children/materialized_path'
 
 module HasChildren
-  def has_children options = {}
+  def has_children(options = {})
     include AdjacencyList
 
     unless options[:node_path_column] == false
@@ -35,7 +35,7 @@ module HasChildren
 
   protected
 
-  def define_tree_scope tree_scope
+  def define_tree_scope(tree_scope)
     scope :tree_scope, case tree_scope
     when Proc
       tree_scope
