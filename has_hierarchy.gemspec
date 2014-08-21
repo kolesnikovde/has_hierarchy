@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['kolesnikovde@gmail.com']
   spec.description   = 'Provides sortable tree behavior to active_record models.'
   spec.summary       = 'Provides sortable tree behavior to active_record models.'
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/kolesnikovde/has_hierarchy'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
@@ -20,9 +20,13 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 1'
   spec.add_development_dependency 'rake',    '~> 10'
+  spec.add_development_dependency 'rspec',   '~> 3'
   spec.add_development_dependency 'rspec',   '~> 2'
   spec.add_development_dependency 'sqlite3', '~> 1'
+  spec.add_development_dependency 'simplecov'
 
   spec.add_runtime_dependency 'activerecord',  '~> 4'
   spec.add_runtime_dependency 'activesupport', '~> 4'
+  spec.add_runtime_dependency 'has_order',     '~> 0.1'
+  spec.add_runtime_dependency 'has_children',  '~> 0.1'
 end
