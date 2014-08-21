@@ -10,11 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Kolesnikov Danil']
   spec.email         = ['kolesnikovde@gmail.com']
   spec.description   = 'Provides tree behavior to active_record models.'
-  spec.summary       = '''
-                       Provides tree behavior to active_record models.
-                       Implements Adjacency List and Materialized Path patterns.
-                       '''
-  spec.homepage      = 'http://'
+  spec.summary       = 'Provides tree behavior to active_record models.'
+  spec.homepage      = 'https://github.com/kolesnikovde/has_children'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
