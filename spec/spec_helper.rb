@@ -1,7 +1,5 @@
-if ENV['SIMPLECOV']
-  require 'simplecov'
-  SimpleCov.start 'rails'
-end
+require 'codeclimate-test-reporter'
+CodeClimate::TestReporter.start
 
 require 'fileutils'
 require 'logger'

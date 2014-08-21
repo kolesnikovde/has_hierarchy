@@ -1,5 +1,7 @@
 [![Gem Version](https://badge.fury.io/rb/has_children.svg)](http://badge.fury.io/rb/has_children)
 [![Build Status](https://api.travis-ci.org/kolesnikovde/has_children.svg)](https://travis-ci.org/kolesnikovde/has_children)
+[![Code Climate](https://codeclimate.com/github/kolesnikovde/has_children/badges/gpa.svg)](https://codeclimate.com/github/kolesnikovde/has_children)
+[![Test Coverage](https://codeclimate.com/github/kolesnikovde/has_children/badges/coverage.svg)](https://codeclimate.com/github/kolesnikovde/has_children)
 
 # has_children
 
