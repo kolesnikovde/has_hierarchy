@@ -16,10 +16,11 @@ And then execute:
 
 ## Usage
 
-    $ rails g migration Item name:string \
-                             parent:belongs_to \
-                             position:integer \
-                             node_path:string
+    $ rails g migration CreateItems \
+        name:string \
+        parent:belongs_to \
+        position:integer \
+        node_path:string
 
 ```ruby
 class Item < ActiveRecord::Base
