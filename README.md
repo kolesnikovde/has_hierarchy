@@ -1,4 +1,7 @@
 [![Gem Version](https://badge.fury.io/rb/has_hierarchy.svg)](http://badge.fury.io/rb/has_hierarchy)
+[![Build Status](https://travis-ci.org/kolesnikovde/has_hierarchy.svg?branch=master)](https://travis-ci.org/kolesnikovde/has_hierarchy)
+[![Code Climate](https://codeclimate.com/github/kolesnikovde/has_hierarchy/badges/gpa.svg)](https://codeclimate.com/github/kolesnikovde/has_hierarchy)
+[![Test Coverage](https://codeclimate.com/github/kolesnikovde/has_hierarchy/badges/coverage.svg)](https://codeclimate.com/github/kolesnikovde/has_hierarchy)
 
 # has_hierarchy
 
