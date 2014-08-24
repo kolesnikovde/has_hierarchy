@@ -1,5 +1,10 @@
 # Changelog
 
+## TODO
+
+- Depth caching?
+- Rewrite specs (shared examples for AL and MP).
+
 ## 0.1.3
 
 - Added README.md.

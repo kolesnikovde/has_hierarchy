@@ -28,7 +28,9 @@ And then execute:
 ```ruby
 class Item < ActiveRecord::Base
   # :scope            - optional, proc, symbol or an array of symbols.
-  # :node_path_column - optional, default 'node_path'.
+  # :node_path_cache  - optional, boolean, default true.
+  # :node_path_column - optional, default :node_path.
+  # :node_id_column   - optional, default :id.
   # :counter_cache    - optional, :counter_cache option for parent association.
   # :dependent        - optional, :dependent option for children association.
   has_children counter_cache: :children_count

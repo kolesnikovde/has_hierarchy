@@ -12,9 +12,9 @@ describe HasChildren do
     @qux.reload
   end
 
-  describe 'node path column' do
-    it 'defaults to "node_path"' do
-      expect(Item.node_path_column).to eq(:node_path)
+  describe '.find_by_node_path' do
+    it 'returns node' do
+      expect(Item.find_by_node_path('bar.qux.quux')).to eq(@quux)
     end
   end
 
@@ -78,7 +78,6 @@ describe HasChildren do
     it { expect(subject).not_to be_leaf }
     it { expect(subject).to be_root }
     it { expect(subject.depth).to be_zero }
-    it { expect(subject.root_id).to be_nil }
     it { expect(subject.root).to be_nil }
     it { expect(subject.parent).to be_nil }
     it { expect(subject.children).to match_array(children) }
@@ -150,7 +149,6 @@ describe HasChildren do
 
     it { expect(subject).to be_leaf }
     it { expect(subject).not_to be_root }
-    it { expect(subject.root_id).to eq(root.id) }
     it { expect(subject.root).to eq(root) }
     it { expect(subject.depth).to eq(ancestors.count) }
     it { expect(subject.parent).to eq(parent) }
@@ -180,14 +178,6 @@ describe HasChildren do
       it 'true for ancestor' do
         expect(subject.descendant_of?(root)).to be true
       end
-    end
-  end
-
-  describe 'root association' do
-    it 'can be preloaded' do
-      item = Item.includes(:root).first
-
-      expect(item.association(:root)).to be_loaded
     end
   end
 
