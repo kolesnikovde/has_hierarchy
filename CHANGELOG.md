@@ -2,8 +2,11 @@
 
 ## TODO
 
-- Depth caching?
-- Rewrite specs (shared examples for AL and MP).
+[*] Add custom node path values.
+[*] Add `.find_by_node_path`.
+[*] Add `#child_of?`.
+[*] Rewrite specs.
+[ ] Add optional depth caching.
 
 ## 0.1.3
 

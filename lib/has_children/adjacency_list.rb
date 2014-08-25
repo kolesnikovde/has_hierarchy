@@ -30,7 +30,11 @@ module HasChildren
     end
 
     def parent_of?(node)
-      node.parent_id == id if id.present?
+      node.parent_id == id
+    end
+
+    def child_of?(node)
+      node.id == parent_id
     end
 
     def sibling_of?(node)
