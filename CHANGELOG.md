@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+- has_children-0.2.0
+
 ## 0.1.2
 
 - Added README.md
