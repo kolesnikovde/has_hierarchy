@@ -27,5 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'activerecord',  '~> 4'
   spec.add_runtime_dependency 'activesupport', '~> 4'
   spec.add_runtime_dependency 'has_order',     '~> 0.1'
-  spec.add_runtime_dependency 'has_children',  '~> 0.1'
+  spec.add_runtime_dependency 'has_children',  '~> 0.2'
 end

@@ -19,12 +19,13 @@ And then execute:
 
 ## Usage
 
-    $ rails g migration CreateItems \
-        name:string \
-        parent:belongs_to \
-        position:integer \
-        node_path:string
-
+```sh
+$ rails g migration CreateItems \
+    name:string \
+    parent:belongs_to \
+    position:integer \
+    node_path:string
+```
 ```ruby
 class Item < ActiveRecord::Base
   has_hierarchy
@@ -36,29 +37,27 @@ qux = bar.children.create!(name: 'qux')
 baz = bar.children.create!(name: 'baz')
 quux = qux.children.create!(name: 'quux')
 
-Item.tree
-# {
-#   foo => {},
-#   bar => {
-#     qux => {
-#       quux => {}
-#     },
-#     baz => {}
-#   }
-# }
+Item.tree # => {
+          #   foo => {},
+          #   bar => {
+          #     qux => {
+          #       quux => {}
+          #     },
+          #     baz => {}
+          #   }
+          # }
 
 foo.move_after(quux)
 
-Item.tree
-# {
-#   bar => {
-#     qux => {
-#       quux => {},
-#       foo => {}
-#     },
-#     baz => {}
-#   }
-# }
+Item.tree # => {
+          #   bar => {
+          #     qux => {
+          #       quux => {},
+          #       foo => {}
+          #     },
+          #     baz => {}
+          #   }
+          # }
 
 ```
 
