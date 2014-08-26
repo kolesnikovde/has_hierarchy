@@ -19,18 +19,19 @@ And then execute:
 
 ## Usage
 
-    $ rails g migration CreateItems \
-        name:string \
-        parent:belongs_to \
-        node_path:string \
-        children_count:integer
-
+Example tree:
+```sh
+$ rails g migration CreateItems \
+    name:string \
+    parent:belongs_to \
+    node_path:string \
+    children_count:integer
+```
 ```ruby
 class Item < ActiveRecord::Base
   # :scope            - optional, proc, symbol or an array of symbols.
-  # :node_path_cache  - optional, boolean, default true.
-  # :node_path_column - optional, default :node_path.
-  # :node_id_column   - optional, default :id.
+  # :node_path_cache  - optional, symbol or boolean, default :node_path.
+  # :node_id_column   - optional, symbol, default :id.
   # :counter_cache    - optional, :counter_cache option for parent association.
   # :dependent        - optional, :dependent option for children association.
   has_children counter_cache: :children_count
@@ -43,28 +44,33 @@ baz = bar.children.create!(name: 'baz')
 quux = qux.children.create!(name: 'quux')
 
 Item.roots # => [ foo, bar ]
-Item.tree
-# {
-#   foo => {},
-#   bar => {
-#     qux => {
-#       quux => {}
-#     },
-#     baz => {}
-#   }
-# }
+Item.tree  # => {
+           #   foo => {},
+           #   bar => {
+           #     qux => {
+           #       quux => {}
+           #     },
+           #     baz => {}
+           #   }
+           # }
+```
 
+Basic operations:
+```ruby
 foo.root?            # => true
 foo.leaf?            # => false
-foo.sibling_of?(bar) # => true
 bar.parent_of?(quux) # => false
+bar.sibling_of?(foo) # => true
+qux.child_of?(bar)   # => true
 quux.root?           # => false
 quux.leaf?           # => true
 qux.parent           # => bar
 bar.children         # => [ qux, baz ]
 foo.siblings         # => [ bar ]
+```
 
-# node_path column is required for following methods:
+Node path cache is required for following methods:
+```ruby
 bar.root_of?(quux)      # => true
 bar.ancestor_of?(quux)  # => true
 qux.descendant_of?(bar) # => true

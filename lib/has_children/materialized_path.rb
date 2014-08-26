@@ -7,7 +7,9 @@ module HasChildren
       before_update :apply_parent_change_to_children, if: :parent_id_changed?
 
       cattr_accessor :node_path_column do
-        has_children_options[:node_path_column] || :node_path
+        column = has_children_options[:node_path_cache]
+        column = :node_path if column.nil? or column == true
+        column
       end
 
       cattr_accessor :node_id_column do

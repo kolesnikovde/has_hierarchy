@@ -6,9 +6,8 @@ require 'has_children/materialized_path'
 module HasChildren
   # options - Options hash.
   #           :scope            - optional, proc, symbol or an array of symbols.
-  #           :node_path_cache  - optional, boolean, default true.
-  #           :node_path_column - optional, default :node_path.
-  #           :node_id_column   - optional, default :id.
+  #           :node_path_cache  - optional, symbol or boolean, default :node_path.
+  #           :node_id_column   - optional, symbol, default :id.
   #           :counter_cache    - optional, :counter_cache option for parent association.
   #           :dependent        - optional, :dependent option for children association.
   def has_children(options = {})
