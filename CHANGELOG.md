@@ -1,12 +1,12 @@
 # Changelog
 
-## TODO
+## 0.2.0
 
-[*] Add custom node path values.
-[*] Add `.find_by_node_path`.
-[*] Add `#child_of?`.
-[*] Rewrite specs.
-[ ] Add optional depth caching.
+- Added custom node path values.
+- Added `.find_by_node_path`.
+- Added `#child_of?`.
+- Updated "node_path_column" option (renamed to "node_path_cache").
+- Rewrited specs.
 
 ## 0.1.3
 
