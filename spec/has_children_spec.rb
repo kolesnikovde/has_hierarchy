@@ -237,6 +237,17 @@ shared_examples 'materialized path' do
   end
 end
 
+shared_examples 'tree with cached depth' do
+  include_context 'example tree'
+  it_behaves_like 'adjacency list'
+
+  it 'stores node level' do
+    expect(described_class.where(depth: 0)).to match_array([ foo, bar ])
+    expect(described_class.where(depth: 1)).to match_array([ qux, baz ])
+    expect(described_class.where(depth: 2)).to match_array([ quux ])
+  end
+end
+
 shared_examples 'scoped tree' do
   let!(:foo) { described_class.create!(name: 'foo', category: 'foo') }
   let!(:bar) { described_class.create!(name: 'bar', category: 'bar') }
@@ -252,6 +263,10 @@ end
 
 describe MaterializedPathTreeItem do
   it_behaves_like 'materialized path'
+end
+
+describe CachedDepthTreeItem do
+  it_behaves_like 'tree with cached depth'
 end
 
 describe ScopedWithColumnTreeItem do

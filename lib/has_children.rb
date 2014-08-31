@@ -2,12 +2,14 @@ require 'active_record'
 require 'has_children/version'
 require 'has_children/adjacency_list'
 require 'has_children/materialized_path'
+require 'has_children/depth_cache'
 
 module HasChildren
   # options - Options hash.
   #           :scope            - optional, proc, symbol or an array of symbols.
-  #           :node_path_cache  - optional, symbol or boolean, default :node_path.
-  #           :node_id_column   - optional, symbol, default :id.
+  #           :node_path_cache  - optional, column name or boolean (assumes :node_path if true), default true.
+  #           :node_id_column   - optional, column name, default :id.
+  #           :depth_cache      - optional, column name or boolean (assumes :depth if true), default false.
   #           :counter_cache    - optional, :counter_cache option for parent association.
   #           :dependent        - optional, :dependent option for children association.
   def has_children(options = {})
@@ -19,6 +21,10 @@ module HasChildren
 
     unless options[:node_path_cache] == false
       include MaterializedPath
+    end
+
+    if options[:depth_cache]
+      include DepthCache
     end
 
     belongs_to :parent, class_name: self.name,

@@ -30,8 +30,9 @@ $ rails g migration CreateItems \
 ```ruby
 class Item < ActiveRecord::Base
   # :scope            - optional, proc, symbol or an array of symbols.
-  # :node_path_cache  - optional, symbol or boolean, default :node_path.
-  # :node_id_column   - optional, symbol, default :id.
+  # :node_path_cache  - optional, column name or boolean (assumes :node_path if true), default true.
+  # :node_id_column   - optional, column name, default :id.
+  # :depth_cache      - optional, column name or boolean (assumes :depth if true), default false.
   # :counter_cache    - optional, :counter_cache option for parent association.
   # :dependent        - optional, :dependent option for children association.
   has_children node_id_column: :name,

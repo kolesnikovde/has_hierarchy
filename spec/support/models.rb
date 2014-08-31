@@ -14,6 +14,10 @@ class MaterializedPathTreeItem < Item
                node_id_column: :name
 end
 
+class CachedDepthTreeItem < Item
+  has_children depth_cache: true
+end
+
 class ScopedWithColumnTreeItem < Item
   has_children scope: :category
 end
