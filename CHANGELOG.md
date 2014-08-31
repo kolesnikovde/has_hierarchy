@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+- Fixed `.find_by_node_path`.
+- Added tree rebuilding on node_id change.
+- Added depth caching.
+
 ## 0.2.0
 
 - Added custom node path values.
