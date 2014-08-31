@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- has_children-0.2.2
+- Rewrited specs.
+
 ## 0.2.0
 
 - has_children-0.2.0
