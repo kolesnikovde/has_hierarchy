@@ -34,7 +34,9 @@ class Item < ActiveRecord::Base
   # :node_id_column   - optional, symbol, default :id.
   # :counter_cache    - optional, :counter_cache option for parent association.
   # :dependent        - optional, :dependent option for children association.
-  has_children counter_cache: :children_count
+  has_children node_id_column: :name,
+               counter_cache: :children_count,
+               dependent: :destroy
 end
 
 foo = Item.create!(name: 'foo')
@@ -53,6 +55,10 @@ Item.tree  # => {
            #     baz => {}
            #   }
            # }
+
+Item.find_by_node_path('bar')          # => bar
+Item.find_by_node_path('bar.qux')      # => qux
+Item.find_by_node_path('bar.qux.quux') # => quux
 ```
 
 Basic operations:

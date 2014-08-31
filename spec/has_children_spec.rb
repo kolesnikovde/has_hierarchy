@@ -106,6 +106,8 @@ shared_examples 'materialized path' do
 
   describe '.find_by_node_path' do
     it 'returns node' do
+      expect(described_class.find_by_node_path('bar')).to eq(bar)
+      expect(described_class.find_by_node_path('bar.qux')).to eq(qux)
       expect(described_class.find_by_node_path('bar.qux.quux')).to eq(quux)
     end
   end

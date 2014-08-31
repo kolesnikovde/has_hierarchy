@@ -21,7 +21,7 @@ module HasChildren
       def find_by_node_path(path)
         parts = path.split('.')
         id = parts.pop
-        path = parts.join('.') + '.'
+        path = parts.length > 0 ? parts.join('.') + '.' : ''
 
         where(node_id_column => id, node_path_column => path).first
       end
