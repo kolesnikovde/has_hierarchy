@@ -1,14 +1,9 @@
 require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
-require 'fileutils'
-require 'logger'
 require 'sqlite3'
 require 'active_record'
 
-FileUtils.mkdir_p('tmp/logs/')
-ActiveRecord::Base.logger = Logger.new('tmp/logs/test.log')
-ActiveRecord::Base.logger.level = Logger::DEBUG
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 ActiveRecord::Schema.verbose = false
 
