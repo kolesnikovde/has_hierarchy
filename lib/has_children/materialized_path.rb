@@ -4,7 +4,7 @@ module HasChildren
 
     included do
       before_create :populate_node_path
-      before_update :apply_parent_change_to_children, if: :parent_id_changed?
+      before_update :rebuild_subtree, if: :need_to_rebuild_subtree?
 
       cattr_accessor :node_path_column do
         column = has_children_options[:node_path_cache]
@@ -81,36 +81,39 @@ module HasChildren
       node_path.split('.')
     end
 
-    def path_for_children_nodes
+    def path_for_children
       [ node_path, node_id, '.' ].join
     end
 
     def populate_node_path
-      self.node_path = root? ? '' : parent.path_for_children_nodes
+      self.node_path = root? ? '' : parent.path_for_children
     end
 
     def ancestors_conditions
       { node_id_column => ancestor_ids }
     end
 
-    def descendants_conditions(path = nil)
-      path ||= path_for_children_nodes
-
-      self.class.arel_table[node_path_column].matches("#{path}%")
+    def descendants_conditions
+      arel_node_path = self.class.arel_table[node_path_column]
+      arel_node_path.matches("#{path_for_children}%")
     end
 
     def subtree_conditions
-      self.class.arel_table[node_id_column].eq(node_id).or(descendants_conditions)
+      arel_node_id = self.class.arel_table[node_id_column]
+      arel_node_id.eq(node_id).or(descendants_conditions)
     end
 
-    def apply_parent_change_to_children
-      old_path = path_for_children_nodes
+    def rebuild_subtree
       populate_node_path
-      new_path = path_for_children_nodes
-      column = node_path_column
 
-      set = "#{column} = replace(#{column}, '#{old_path}', '#{new_path}')"
-      tree_scope.where(descendants_conditions(old_path)).update_all(set)
+      children.each do |child|
+        child.rebuild_subtree
+        child.save!
+      end
+    end
+
+    def need_to_rebuild_subtree?
+      parent_id_changed? or changed_attributes.include?(node_id_column)
     end
   end
 end

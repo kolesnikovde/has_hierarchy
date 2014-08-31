@@ -190,6 +190,19 @@ shared_examples 'materialized path' do
     end
   end
 
+  describe 'node id column change' do
+    before do
+      bar.name = 'bor'
+      bar.save!
+    end
+
+    it 'updates children pathes' do
+      expect(described_class.find_by_node_path('bor')).to eq(bar)
+      expect(described_class.find_by_node_path('bor.qux')).to eq(qux)
+      expect(described_class.find_by_node_path('bor.qux.quux')).to eq(quux)
+    end
+  end
+
   describe 'parent change' do
     let(:prev_parent) { baz.parent }
     let(:new_parent) { foo }
