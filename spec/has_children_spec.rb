@@ -182,6 +182,14 @@ shared_examples 'materialized path' do
     end
   end
 
+  describe '#depth' do
+    it 'returns ancestors count' do
+      expect(bar.depth).to eq(0)
+      expect(qux.depth).to eq(1)
+      expect(quux.depth).to eq(2)
+    end
+  end
+
   describe 'parent change' do
     let(:prev_parent) { baz.parent }
     let(:new_parent) { foo }
