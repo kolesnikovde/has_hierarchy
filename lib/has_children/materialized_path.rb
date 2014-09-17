@@ -12,6 +12,10 @@ module HasChildren
         column
       end
 
+      cattr_accessor :node_path_separator do
+        has_children_options[:node_path_separator] || '.'
+      end
+
       cattr_accessor :node_id_column do
         has_children_options[:node_id_column] || :id
       end
@@ -19,9 +23,10 @@ module HasChildren
 
     module ClassMethods
       def find_by_node_path(path)
-        parts = path.split('.')
+        sep = node_path_separator
+        parts = path.split(sep)
         id = parts.pop
-        path = parts.length > 0 ? parts.join('.') + '.' : ''
+        path = parts.length > 0 ? parts.join(sep) + sep : ''
 
         where(node_id_column => id, node_path_column => path).first
       end
@@ -78,11 +83,11 @@ module HasChildren
     end
 
     def ancestor_ids
-      node_path.split('.')
+      node_path.split(node_path_separator)
     end
 
     def path_for_children
-      [ node_path, node_id, '.' ].join
+      [ node_path, node_id, node_path_separator ].join
     end
 
     def populate_node_path
