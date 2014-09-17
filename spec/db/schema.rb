@@ -5,6 +5,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string :node_path
     t.integer :children_count, default: 0
     t.integer :depth
+    t.integer :position
 
     t.belongs_to :parent
   end

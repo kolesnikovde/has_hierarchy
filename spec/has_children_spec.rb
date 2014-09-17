@@ -7,9 +7,12 @@ shared_context 'example tree' do
   let!(:baz) { bar.children.create!(name: 'baz') }
   let!(:quux) { qux.children.create!(name: 'quux') }
 
+  def reload_items
+    [ foo, bar, baz, qux, quux ].each(&:reload)
+  end
+
   before do
-    bar.reload
-    qux.reload
+    reload_items
   end
 end
 
@@ -257,8 +260,42 @@ shared_examples 'scoped tree' do
   end
 end
 
+shared_examples 'ordered tree' do
+  include_context 'example tree'
+
+  it '#move_after' do
+    quux.move_after(foo)
+    reload_items
+
+    expect(described_class.ordered.tree).to be_arranged_like({
+      foo => {},
+      quux => {},
+      bar => {
+        qux => {},
+        baz => {}
+      }
+    })
+  end
+
+  it '#move_before' do
+    baz.move_before(quux)
+    reload_items
+
+    expect(described_class.ordered.tree).to be_arranged_like({
+      foo => {},
+      bar => {
+        qux => {
+          baz => {},
+          quux => {},
+        }
+      }
+    })
+  end
+end
+
 describe AdjacencyListTreeItem do
   it_behaves_like 'adjacency list'
+  it_behaves_like 'ordered tree'
 end
 
 describe MaterializedPathTreeItem do

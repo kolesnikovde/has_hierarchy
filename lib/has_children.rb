@@ -1,23 +1,30 @@
 require 'active_record'
 require 'has_children/version'
 require 'has_children/adjacency_list'
+require 'has_children/order'
 require 'has_children/materialized_path'
 require 'has_children/depth_cache'
 
 module HasChildren
   # options - Options hash.
-  #           :scope            - optional, proc, symbol or an array of symbols.
-  #           :node_path_cache  - optional, column name or boolean (assumes :node_path if true), default true.
-  #           :node_id_column   - optional, column name, default :id.
-  #           :depth_cache      - optional, column name or boolean (assumes :depth if true), default false.
-  #           :counter_cache    - optional, :counter_cache option for parent association.
-  #           :dependent        - optional, :dependent option for children association.
+  #           :scope               - optional, proc, symbol or an array of symbols.
+  #           :position            - optional, column name or boolean, default :position.
+  #           :node_path_cache     - optional, column name or boolean, default :node_path.
+  #           :node_path_separator - optional, string, default '.'.
+  #           :node_id_column      - optional, column name, default :id.
+  #           :depth_cache         - optional, column name or boolean, default :depth.
+  #           :counter_cache       - optional, :counter_cache option for parent association.
+  #           :dependent           - optional, :dependent option for children association.
   def has_children(options = {})
     cattr_accessor :has_children_options do
       options
     end
 
     include AdjacencyList
+
+    unless options[:position] == false
+      include Order
+    end
 
     unless options[:node_path_cache] == false
       include MaterializedPath
@@ -46,7 +53,7 @@ module HasChildren
     when Proc
       tree_scope
     when nil
-      ->(model){ self }
+      ->(model) { self }
     else
       ->(model) { where(Hash[Array(tree_scope).map{ |s| [ s, model[s] ] }]) }
     end
