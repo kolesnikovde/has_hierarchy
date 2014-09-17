@@ -23,5 +23,8 @@ class ScopedWithColumnTreeItem < Item
 end
 
 class ScopedWithLambdaTreeItem < Item
-  has_children scope: ->(item){ where(category: item.category) }
+  has_children scope: ->(item){ where(category: item.category) },
+               # Ordering defines parent_id scope (symbol)
+               # and cannot be combined with lambda.
+               position: false
 end

@@ -5,8 +5,10 @@ module HasChildren
     extend ActiveSupport::Concern
 
     included do
-      has_order scope: :parent_id,
-                position_column: has_children_options[:position]
+      options = has_children_options
+
+      has_order scope: Array(options[:scope]).concat([ :parent_id ]),
+                position_column: options[:position]
 
       include HasOrderOverrides
     end

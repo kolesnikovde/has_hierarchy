@@ -53,7 +53,7 @@ module HasChildren
     when Proc
       tree_scope
     when nil
-      ->(model) { self }
+      ->(model) { where(nil) }
     else
       ->(model) { where(Hash[Array(tree_scope).map{ |s| [ s, model[s] ] }]) }
     end
