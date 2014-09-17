@@ -36,8 +36,6 @@ module HasChildren
                         inverse_of: :parent,
                         dependent: options[:dependent]
 
-    scope :roots, ->{ where(parent_id: nil) }
-
     define_tree_scope(options[:scope])
   end
 

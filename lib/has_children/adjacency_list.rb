@@ -3,6 +3,10 @@ module HasChildren
     extend ActiveSupport::Concern
 
     module ClassMethods
+      def roots
+        where(parent_id: nil)
+      end
+
       def tree
         nodes = all
         index = {}
