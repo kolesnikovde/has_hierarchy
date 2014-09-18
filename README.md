@@ -32,6 +32,7 @@ $ rails g model Item \
 ```ruby
 class Item < ActiveRecord::Base
   has_hierarchy path_part: :name,
+                depth_cache: true,
                 counter_cache: :children_count,
                 dependent: :destroy
 end
@@ -71,7 +72,7 @@ Item.ordered.tree
 #   }
 # }
 
-Item.find_by_node_path('bar/qux/quux')
+Item.find_by_path('bar/qux/quux')
 # => quux
 ```
 
