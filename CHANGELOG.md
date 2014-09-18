@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- Added "path_separator" option.
+- Added ordering support.
+- Cleaned up options.
+- Renamed to has_hierarchy.
+
 ## 0.2.1
 
 - Fixed `.find_by_node_path`.
