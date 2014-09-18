@@ -13,7 +13,7 @@ module HasChildren
       end
 
       cattr_accessor :path_separator do
-        has_children_options[:path_separator] || '.'
+        has_children_options[:path_separator] || '/'
       end
 
       cattr_accessor :path_part_column do

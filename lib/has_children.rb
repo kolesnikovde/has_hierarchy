@@ -10,7 +10,7 @@ module HasChildren
   #           :order          - column name or boolean, default :position.
   #           :path_cache     - column name or boolean, default :path.
   #           :path_part      - column name, default :id.
-  #           :path_separator - string, default '.'.
+  #           :path_separator - string, default '/'.
   #           :depth_cache    - column name or boolean, default :depth.
   #           :counter_cache  - :counter_cache option for parent association.
   #           :dependent      - :dependent option for children association.
