@@ -1,38 +1,28 @@
 require 'active_record'
 require 'has_children/version'
-require 'has_children/adjacency_list'
 require 'has_children/order'
-require 'has_children/materialized_path'
+require 'has_children/path'
 require 'has_children/depth_cache'
 
 module HasChildren
   # options - Options hash.
-  #           :scope               - optional, proc, symbol or an array of symbols.
-  #           :position            - optional, column name or boolean, default :position.
-  #           :node_path_cache     - optional, column name or boolean, default :node_path.
-  #           :node_path_separator - optional, string, default '.'.
-  #           :node_id_column      - optional, column name, default :id.
-  #           :depth_cache         - optional, column name or boolean, default :depth.
-  #           :counter_cache       - optional, :counter_cache option for parent association.
-  #           :dependent           - optional, :dependent option for children association.
+  #           :scope          - proc, symbol or an array of symbols.
+  #           :order          - column name or boolean, default :position.
+  #           :path_cache     - column name or boolean, default :path.
+  #           :path_part      - column name, default :id.
+  #           :path_separator - string, default '.'.
+  #           :depth_cache    - column name or boolean, default :depth.
+  #           :counter_cache  - :counter_cache option for parent association.
+  #           :dependent      - :dependent option for children association.
   def has_children(options = {})
-    cattr_accessor :has_children_options do
-      options
-    end
+    cattr_accessor(:has_children_options) { options }
 
-    include AdjacencyList
+    extend ClassMethods
+    include InstanceMethods
 
-    unless options[:position] == false
-      include Order
-    end
-
-    unless options[:node_path_cache] == false
-      include MaterializedPath
-    end
-
-    if options[:depth_cache]
-      include DepthCache
-    end
+    include Order      unless options[:order] == false
+    include Path       unless options[:path_cache] == false
+    include DepthCache if options[:depth_cache]
 
     belongs_to :parent, class_name: self.name,
                         inverse_of: :children,
@@ -46,16 +36,84 @@ module HasChildren
     define_tree_scope(options[:scope])
   end
 
-  protected
+  module ClassMethods
+    def roots
+      where(parent_id: nil)
+    end
 
-  def define_tree_scope(tree_scope)
-    scope :tree_scope, case tree_scope
-    when Proc
-      tree_scope
-    when nil
-      ->(model) { where(nil) }
-    else
-      ->(model) { where(Hash[Array(tree_scope).map{ |s| [ s, model[s] ] }]) }
+    def tree
+      nodes = all
+      index = {}
+      arranged = {}
+
+      nodes.each do |node|
+        struct = node.root? ? arranged : (index[node.parent_id] ||= {})
+        struct[node] = (index[node.id] ||= {})
+      end
+
+      arranged
+    end
+
+    protected
+
+    def define_tree_scope(tree_scope)
+      scope :tree_scope, case tree_scope
+      when Proc
+        tree_scope
+      when nil
+        ->(model) { where(nil) }
+      else
+        ->(model) { where(Hash[Array(tree_scope).map{ |s| [ s, model[s] ] }]) }
+      end
+    end
+  end
+
+  module InstanceMethods
+    def leaf?
+      if counter_cache = has_children_options[:counter_cache]
+        self[counter_cache] == 0
+      else
+        children.empty?
+      end
+    end
+
+    def root?
+      parent_id.nil?
+    end
+
+    def parent_of?(node)
+      node.parent_id == id
+    end
+
+    def child_of?(node)
+      node.id == parent_id
+    end
+
+    def sibling_of?(node)
+      parent_id == node.parent_id and id != node.id
+    end
+
+    def siblings
+      tree_scope.where(siblings_conditions)
+    end
+
+    def move_children_to_parent
+      children.each do |c|
+        c.parent = self.parent
+        c.save
+      end
+    end
+
+    protected
+
+    def tree_scope
+      self.class.tree_scope(self)
+    end
+
+    def siblings_conditions
+      t = self.class.arel_table
+
+      t[:parent_id].eq(parent_id).and(t[:id].not_eq(id))
     end
   end
 end

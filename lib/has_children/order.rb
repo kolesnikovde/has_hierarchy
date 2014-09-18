@@ -8,7 +8,7 @@ module HasChildren
       options = has_children_options
 
       has_order scope: Array(options[:scope]).concat([ :parent_id ]),
-                position_column: options[:position]
+                position_column: options[:order]
 
       include HasOrderOverrides
     end

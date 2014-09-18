@@ -107,11 +107,11 @@ shared_examples 'materialized path' do
   include_context 'example tree'
   it_behaves_like 'adjacency list'
 
-  describe '.find_by_node_path' do
+  describe '.find_by_path' do
     it 'returns node' do
-      expect(described_class.find_by_node_path('bar')).to eq(bar)
-      expect(described_class.find_by_node_path('bar.qux')).to eq(qux)
-      expect(described_class.find_by_node_path('bar.qux.quux')).to eq(quux)
+      expect(described_class.find_by_path('bar')).to eq(bar)
+      expect(described_class.find_by_path('bar.qux')).to eq(qux)
+      expect(described_class.find_by_path('bar.qux.quux')).to eq(quux)
     end
   end
 
@@ -200,9 +200,9 @@ shared_examples 'materialized path' do
     end
 
     it 'updates children pathes' do
-      expect(described_class.find_by_node_path('bor')).to eq(bar)
-      expect(described_class.find_by_node_path('bor.qux')).to eq(qux)
-      expect(described_class.find_by_node_path('bor.qux.quux')).to eq(quux)
+      expect(described_class.find_by_path('bor')).to eq(bar)
+      expect(described_class.find_by_path('bor.qux')).to eq(qux)
+      expect(described_class.find_by_path('bor.qux.quux')).to eq(quux)
     end
   end
 
@@ -214,12 +214,10 @@ shared_examples 'materialized path' do
     before do
       baz.parent = new_parent
       baz.save!
+      reload_items
     end
 
     it 'updates counter_cache' do
-      prev_parent.reload
-      new_parent.reload
-
       expect(prev_parent.children_count).to eq(prev_parent.children.count)
       expect(new_parent.children_count).to eq(new_parent.children.count)
     end
