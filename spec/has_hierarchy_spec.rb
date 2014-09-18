@@ -110,8 +110,8 @@ shared_examples 'materialized path' do
   describe '.find_by_path' do
     it 'returns node' do
       expect(described_class.find_by_path('bar')).to eq(bar)
-      expect(described_class.find_by_path('bar.qux')).to eq(qux)
-      expect(described_class.find_by_path('bar.qux.quux')).to eq(quux)
+      expect(described_class.find_by_path('bar/qux')).to eq(qux)
+      expect(described_class.find_by_path('bar/qux/quux')).to eq(quux)
     end
   end
 
@@ -201,8 +201,8 @@ shared_examples 'materialized path' do
 
     it 'updates children pathes' do
       expect(described_class.find_by_path('bor')).to eq(bar)
-      expect(described_class.find_by_path('bor.qux')).to eq(qux)
-      expect(described_class.find_by_path('bor.qux.quux')).to eq(quux)
+      expect(described_class.find_by_path('bor/qux')).to eq(qux)
+      expect(described_class.find_by_path('bor/qux/quux')).to eq(quux)
     end
   end
 

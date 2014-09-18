@@ -1,11 +1,11 @@
 require 'has_order'
 
-module HasChildren
+module HasHierarchy
   module Order
     extend ActiveSupport::Concern
 
     included do
-      options = has_children_options
+      options = has_hierarchy_options
 
       has_order scope: Array(options[:scope]).concat([ :parent_id ]),
                 position_column: options[:order]

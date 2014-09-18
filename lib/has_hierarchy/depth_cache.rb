@@ -1,4 +1,4 @@
-module HasChildren
+module HasHierarchy
   module DepthCache
     extend ActiveSupport::Concern
 
@@ -6,7 +6,7 @@ module HasChildren
       before_save :cache_depth
 
       cattr_accessor :depth_column do
-        column = has_children_options[:depth_cache]
+        column = has_hierarchy_options[:depth_cache]
         column = :depth if column == true
         column
       end

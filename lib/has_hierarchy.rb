@@ -1,10 +1,10 @@
 require 'active_record'
-require 'has_children/version'
-require 'has_children/order'
-require 'has_children/path'
-require 'has_children/depth_cache'
+require 'has_hierarchy/version'
+require 'has_hierarchy/order'
+require 'has_hierarchy/path'
+require 'has_hierarchy/depth_cache'
 
-module HasChildren
+module HasHierarchy
   # options - Options hash.
   #           :scope          - proc, symbol or an array of symbols.
   #           :order          - column name or boolean, default :position.
@@ -14,8 +14,8 @@ module HasChildren
   #           :depth_cache    - column name or boolean, default :depth.
   #           :counter_cache  - :counter_cache option for parent association.
   #           :dependent      - :dependent option for children association.
-  def has_children(options = {})
-    cattr_accessor(:has_children_options) { options }
+  def has_hierarchy(options = {})
+    cattr_accessor(:has_hierarchy_options) { options }
 
     extend ClassMethods
     include InstanceMethods
@@ -70,7 +70,7 @@ module HasChildren
 
   module InstanceMethods
     def leaf?
-      if counter_cache = has_children_options[:counter_cache]
+      if counter_cache = has_hierarchy_options[:counter_cache]
         self[counter_cache] == 0
       else
         children.empty?
@@ -118,4 +118,4 @@ module HasChildren
   end
 end
 
-ActiveRecord::Base.extend(HasChildren)
+ActiveRecord::Base.extend(HasHierarchy)

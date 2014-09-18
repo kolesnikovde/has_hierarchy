@@ -1,30 +1,29 @@
-require 'has_children'
+require 'has_hierarchy'
 
 class Item < ActiveRecord::Base
   scope :alphabetic, ->{ order('name asc') }
 end
 
 class AdjacencyListTreeItem < Item
-  has_children counter_cache: :children_count,
-               path_cache: false
+  has_hierarchy counter_cache: :children_count,
+                path_cache: false
 end
 
 class MaterializedPathTreeItem < Item
-  has_children counter_cache: :children_count,
-               path_part: :name
+  has_hierarchy counter_cache: :children_count,
+                path_part: :name
 end
 
 class CachedDepthTreeItem < Item
-  has_children depth_cache: true
+  has_hierarchy depth_cache: true
 end
 
 class ScopedWithColumnTreeItem < Item
-  has_children scope: :category
+  has_hierarchy scope: :category
 end
 
 class ScopedWithLambdaTreeItem < Item
-  has_children scope: ->(item){ where(category: item.category) },
-               # Ordering defines parent_id scope (symbol)
-               # and cannot be combined with lambda.
-               order: false
+  has_hierarchy scope: ->(item){ where(category: item.category) },
+                # Ordering scope (parent_id) cannot be combined with lambda.
+                order: false
 end

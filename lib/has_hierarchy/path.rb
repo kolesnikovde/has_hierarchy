@@ -1,4 +1,4 @@
-module HasChildren
+module HasHierarchy
   module Path
     extend ActiveSupport::Concern
 
@@ -7,17 +7,17 @@ module HasChildren
       before_update :rebuild_subtree, if: :need_to_rebuild_subtree?
 
       cattr_accessor :path_column do
-        column = has_children_options[:path_cache]
+        column = has_hierarchy_options[:path_cache]
         column = :path if column.nil? or column == true
         column
       end
 
       cattr_accessor :path_separator do
-        has_children_options[:path_separator] || '/'
+        has_hierarchy_options[:path_separator] || '/'
       end
 
       cattr_accessor :path_part_column do
-        has_children_options[:path_part] || :id
+        has_hierarchy_options[:path_part] || :id
       end
     end
 
