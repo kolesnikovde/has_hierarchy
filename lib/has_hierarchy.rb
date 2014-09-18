@@ -5,15 +5,6 @@ require 'has_hierarchy/path'
 require 'has_hierarchy/depth_cache'
 
 module HasHierarchy
-  # options - Options hash.
-  #           :scope          - proc, symbol or an array of symbols.
-  #           :order          - column name or boolean, default :position.
-  #           :path_cache     - column name or boolean, default :path.
-  #           :path_part      - column name, default :id.
-  #           :path_separator - string, default '/'.
-  #           :depth_cache    - column name or boolean, default :depth.
-  #           :counter_cache  - :counter_cache option for parent association.
-  #           :dependent      - :dependent option for children association.
   def has_hierarchy(options = {})
     cattr_accessor(:has_hierarchy_options) { options }
 
