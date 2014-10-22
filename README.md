@@ -72,8 +72,10 @@ Item.ordered.tree
 #   }
 # }
 
-Item.find_by_path('bar/qux/quux')
+quux = Item.find_by_path('bar/qux/quux')
 # => quux
+quux.full_path
+# => 'bar/qux/quux'
 ```
 
 Operations on nodes:
