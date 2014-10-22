@@ -5,14 +5,25 @@ require 'has_hierarchy/path'
 require 'has_hierarchy/depth_cache'
 
 module HasHierarchy
-  def has_hierarchy(options = {})
-    cattr_accessor(:has_hierarchy_options) { options }
+  DEFAULT_OPTIONS = {
+    scope: nil,
+    order: :position,
+    path_cache: :path,
+    path_part: :id,
+    path_separator: '/',
+    depth_cache: :depth,
+    counter_cache: :children_count,
+    dependent: nil
+  }
 
+  def has_hierarchy(options = {})
     extend ClassMethods
     include InstanceMethods
 
-    include Order      unless options[:order] == false
-    include Path       unless options[:path_cache] == false
+    setup_has_hierarchy_options(options)
+
+    include Order      if options[:order]
+    include Path       if options[:path_cache]
     include DepthCache if options[:depth_cache]
 
     belongs_to :parent, class_name: self.name,
@@ -46,6 +57,23 @@ module HasHierarchy
     end
 
     protected
+
+    def setup_has_hierarchy_options(options)
+      options.assert_valid_keys(DEFAULT_OPTIONS.keys)
+
+      # Set to false if nil.
+      options.reverse_merge!(depth_cache: false, counter_cache: false)
+
+      DEFAULT_OPTIONS.each do |key, value|
+        options[key] = value if options[key].nil? or options[key] == true
+      end
+
+      cattr_accessor(:path_column) { options[:path_cache] }
+      cattr_accessor(:path_part_column) { options[:path_part] }
+      cattr_accessor(:path_separator) { options[:path_separator] }
+      cattr_accessor(:depth_column) { options[:depth_cache] }
+      cattr_accessor(:has_hierarchy_options) { options }
+    end
 
     def define_tree_scope(tree_scope)
       scope :tree_scope, case tree_scope

@@ -4,12 +4,6 @@ module HasHierarchy
 
     included do
       before_save :cache_depth
-
-      cattr_accessor :depth_column do
-        column = has_hierarchy_options[:depth_cache]
-        column = :depth if column == true
-        column
-      end
     end
 
     protected

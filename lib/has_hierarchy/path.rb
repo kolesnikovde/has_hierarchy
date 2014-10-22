@@ -5,20 +5,6 @@ module HasHierarchy
     included do
       before_create :populate_path
       before_update :rebuild_subtree, if: :need_to_rebuild_subtree?
-
-      cattr_accessor :path_column do
-        column = has_hierarchy_options[:path_cache]
-        column = :path if column.nil? or column == true
-        column
-      end
-
-      cattr_accessor :path_separator do
-        has_hierarchy_options[:path_separator] || '/'
-      end
-
-      cattr_accessor :path_part_column do
-        has_hierarchy_options[:path_part] || :id
-      end
     end
 
     module ClassMethods

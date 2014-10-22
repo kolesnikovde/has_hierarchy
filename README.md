@@ -33,7 +33,7 @@ $ rails g model Item \
 class Item < ActiveRecord::Base
   has_hierarchy path_part: :name,
                 depth_cache: true,
-                counter_cache: :children_count,
+                counter_cache: true,
                 dependent: :destroy
 end
 

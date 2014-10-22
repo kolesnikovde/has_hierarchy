@@ -6,7 +6,8 @@ end
 
 class AdjacencyListTreeItem < Item
   has_hierarchy counter_cache: :children_count,
-                path_cache: false
+                path_cache: false,
+                order: true
 end
 
 class MaterializedPathTreeItem < Item
@@ -24,6 +25,6 @@ end
 
 class ScopedWithLambdaTreeItem < Item
   has_hierarchy scope: ->(item){ where(category: item.category) },
-                # Ordering scope (parent_id) cannot be combined with lambda.
+                # parent_id scope cannot be combined with lambda.
                 order: false
 end
