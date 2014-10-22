@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1
+
+- Added path normalization to `.find_by_path`
+- Added `.find_by_path!`
+- Added `#full_path`
+- Fixed boolean options.
+- Added options validation.
+
 ## 0.3.0
 
 - Added "path_separator" option.
