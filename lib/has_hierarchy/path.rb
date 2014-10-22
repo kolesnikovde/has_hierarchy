@@ -24,11 +24,15 @@ module HasHierarchy
     module ClassMethods
       def find_by_path(path)
         sep = path_separator
-        parts = path.split(sep)
+        parts = path.gsub(/\#{sep}*$/, '').split(sep)
         part = parts.pop
         path = parts.length > 0 ? parts.join(sep) + sep : ''
 
         where(path_part_column => part, path_column => path).first
+      end
+
+      def find_by_path!(path)
+        find_by_path(path) or raise ActiveRecord::RecordNotFound
       end
     end
 
@@ -70,6 +74,10 @@ module HasHierarchy
 
     def path=(path)
       self[path_column] = path
+    end
+
+    def full_path
+      path + path_part
     end
 
     protected

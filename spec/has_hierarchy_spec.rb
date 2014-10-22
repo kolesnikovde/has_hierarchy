@@ -110,8 +110,23 @@ shared_examples 'materialized path' do
   describe '.find_by_path' do
     it 'returns node' do
       expect(described_class.find_by_path('bar')).to eq(bar)
-      expect(described_class.find_by_path('bar/qux')).to eq(qux)
+      expect(described_class.find_by_path('bar/qux/')).to eq(qux)
       expect(described_class.find_by_path('bar/qux/quux')).to eq(quux)
+    end
+  end
+
+  describe '.find_by_path!' do
+    it 'returns node or raises RecordNotFound' do
+      expect(described_class.find_by_path!('bar/qux/')).to eq(qux)
+      expect{ described_class.find_by_path!('wrong') }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe '#full_path' do
+    it 'returns full node path' do
+      expect(bar.full_path).to eq('bar')
+      expect(qux.full_path).to eq('bar/qux')
+      expect(quux.full_path).to eq('bar/qux/quux')
     end
   end
 
