@@ -5,7 +5,7 @@
 
 # has_hierarchy
 
-Provides tree behavior to active_record models.
+Tree behavior for ActiveRecord models and Mongoid documents.
 
 ## Installation
 

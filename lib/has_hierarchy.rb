@@ -3,6 +3,7 @@ require 'has_hierarchy/version'
 require 'has_hierarchy/order'
 require 'has_hierarchy/path'
 require 'has_hierarchy/depth_cache'
+require 'has_hierarchy/orm_adapter'
 
 module HasHierarchy
   DEFAULT_OPTIONS = {
@@ -36,6 +37,8 @@ module HasHierarchy
                         dependent: options[:dependent]
 
     define_tree_scope(options[:scope])
+
+    include HasHierarchy::OrmAdapter
   end
 
   module ClassMethods
@@ -112,10 +115,6 @@ module HasHierarchy
       parent_id == node.parent_id and id != node.id
     end
 
-    def siblings
-      tree_scope.where(siblings_conditions)
-    end
-
     def move_children_to_parent
       children.each do |c|
         c.parent = self.parent
@@ -128,13 +127,5 @@ module HasHierarchy
     def tree_scope
       self.class.tree_scope(self)
     end
-
-    def siblings_conditions
-      t = self.class.arel_table
-
-      t[:parent_id].eq(parent_id).and(t[:id].not_eq(id))
-    end
   end
 end
-
-ActiveRecord::Base.extend(HasHierarchy)

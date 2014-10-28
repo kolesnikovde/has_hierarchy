@@ -1,17 +1,11 @@
-require 'has_hierarchy'
-
-class Item < ActiveRecord::Base
-  scope :alphabetic, ->{ order('name asc') }
-end
-
 class AdjacencyListTreeItem < Item
-  has_hierarchy counter_cache: :children_count,
+  has_hierarchy counter_cache: true,
                 path_cache: false,
                 order: true
 end
 
 class MaterializedPathTreeItem < Item
-  has_hierarchy counter_cache: :children_count,
+  has_hierarchy counter_cache: true,
                 path_part: :name
 end
 

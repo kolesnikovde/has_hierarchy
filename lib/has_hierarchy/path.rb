@@ -23,31 +23,21 @@ module HasHierarchy
     end
 
     def root
-      self.class.find_by(path_part_column => path_parts.first)
+      if root_part = path_parts.first
+        self.class.find_by(path_part_column => root_part)
+      end
     end
 
     def root_of?(node)
       node.path_parts.first == path_part if path_part.present?
     end
 
-    def ancestors
-      tree_scope.where(ancestors_conditions)
-    end
-
     def ancestor_of?(node)
       node.path_parts.include?(path_part)
     end
 
-    def descendants
-      tree_scope.where(descendants_conditions)
-    end
-
     def descendant_of?(node)
       path_parts.include?(node.path_part)
-    end
-
-    def subtree
-      tree_scope.where(subtree_conditions)
     end
 
     def depth
@@ -80,35 +70,21 @@ module HasHierarchy
       [ path, path_part, path_separator ].join
     end
 
-    def populate_path
-      self.path = root? ? '' : parent.path_for_children
+    def populate_path(path = nil)
+      self.path = root? ? '' : (path || parent.path_for_children)
     end
 
-    def ancestors_conditions
-      { path_part_column => path_parts }
-    end
-
-    def descendants_conditions
-      arel_path = self.class.arel_table[path_column]
-      arel_path.matches("#{path_for_children}%")
-    end
-
-    def subtree_conditions
-      arel_path_part = self.class.arel_table[path_part_column]
-      arel_path_part.eq(path_part).or(descendants_conditions)
-    end
-
-    def rebuild_subtree
-      populate_path
+    def rebuild_subtree(path = nil)
+      populate_path(path)
 
       children.each do |child|
-        child.rebuild_subtree
+        child.rebuild_subtree(path_for_children)
         child.save!
       end
     end
 
     def need_to_rebuild_subtree?
-      parent_id_changed? or changed_attributes.include?(path_part_column)
+      parent_id_changed? or changed_attributes.include?(path_part_column.to_s)
     end
   end
 end

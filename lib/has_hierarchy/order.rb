@@ -5,6 +5,8 @@ module HasHierarchy
     extend ActiveSupport::Concern
 
     included do
+      include Mongoid::HasOrder if defined?(Mongoid)
+
       options = has_hierarchy_options
 
       has_order scope: Array(options[:scope]).concat([ :parent_id ]),
