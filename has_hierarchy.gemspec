@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
 
   spec.authors       = ['Kolesnikov Danil']
   spec.email         = ['kolesnikovde@gmail.com']
-  spec.description   = 'Provides tree behavior to active_record models.'
-  spec.summary       = 'Provides tree behavior to active_record models.'
+  spec.description   = 'Tree behavior for ActiveRecord models and Mongoid documents.'
+  spec.summary       = 'Tree behavior for ActiveRecord models and Mongoid documents.'
   spec.homepage      = 'https://github.com/kolesnikovde/has_hierarchy'
   spec.license       = 'MIT'
 
