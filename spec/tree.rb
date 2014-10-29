@@ -220,7 +220,7 @@ shared_examples 'materialized path' do
   end
 
   describe 'parent change' do
-    let(:prev_parent) { baz.parent }
+    let(:prev_parent) { bar }
     let(:new_parent) { foo }
     let(:new_ancestors) { [ foo ] }
 
@@ -230,10 +230,15 @@ shared_examples 'materialized path' do
       reload_items
     end
 
-    # it 'updates counter_cache' do
-    #   expect(prev_parent.children_count).to eq(prev_parent.children.count)
-    #   expect(new_parent.children_count).to eq(new_parent.children.count)
-    # end
+    it 'updates counter cache' do
+      expect(prev_parent.children_count).to eq(prev_parent.children.count)
+      expect(new_parent.children_count).to eq(new_parent.children.count)
+
+      new_parent.descendants.destroy_all
+      new_parent.reload
+
+      expect(new_parent.children_count).to eq(0)
+    end
 
     it 'changes ancestors' do
       expect(baz.ancestors).to match_array(new_ancestors)

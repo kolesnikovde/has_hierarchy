@@ -3,6 +3,7 @@ require 'has_hierarchy/version'
 require 'has_hierarchy/order'
 require 'has_hierarchy/path'
 require 'has_hierarchy/depth_cache'
+require 'has_hierarchy/counter_cache'
 require 'has_hierarchy/orm_adapter'
 
 module HasHierarchy
@@ -23,13 +24,13 @@ module HasHierarchy
 
     setup_has_hierarchy_options(options)
 
-    include Order      if options[:order]
-    include Path       if options[:path_cache]
-    include DepthCache if options[:depth_cache]
+    include Order        if options[:order]
+    include Path         if options[:path_cache]
+    include DepthCache   if options[:depth_cache]
+    include CounterCache if options[:counter_cache]
 
     belongs_to :parent, class_name: self.name,
-                        inverse_of: :children,
-                        counter_cache: options[:counter_cache]
+                        inverse_of: :children
 
     has_many :children, class_name: self.name,
                         foreign_key: :parent_id,
@@ -75,6 +76,7 @@ module HasHierarchy
       cattr_accessor(:path_part_column) { options[:path_part] }
       cattr_accessor(:path_separator) { options[:path_separator] }
       cattr_accessor(:depth_column) { options[:depth_cache] }
+      cattr_accessor(:children_count_column) { options[:counter_cache] }
       cattr_accessor(:has_hierarchy_options) { options }
     end
 
