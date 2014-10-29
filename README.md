@@ -120,8 +120,8 @@ bar.descendants         # => [ qux, quux, baz ]
 
 Ordering (see [has_order](https://github.com/kolesnikovde/has_order)):
 ```ruby
-bar.previous_siblings  # => [ foo, quux ]
-foo.next_siblings      # => [ quux, bar ]
+bar.previous_siblings  # => [ foo ]
+foo.next_siblings      # => [ bar ]
 
 foo.move_after(quux)
 Item.ordered.tree
