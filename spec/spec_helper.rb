@@ -3,7 +3,7 @@ CodeClimate::TestReporter.start
 
 orm_adapter = ENV['HAS_HIERARCHY_ORM']
 
-unless %w[activerecord mongoid].include?(orm_adapter)
+unless %w[active_record mongoid].include?(orm_adapter)
   raise 'Unknown ORM.'
 end
 

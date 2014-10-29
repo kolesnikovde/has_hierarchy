@@ -7,7 +7,7 @@ rvm:
 
 env:
   - HAS_HIERARCHY_ORM=mongoid
-  - HAS_HIERARCHY_ORM=activerecord
+  - HAS_HIERARCHY_ORM=active_record
 
 matrix:
   fast_finish: true
