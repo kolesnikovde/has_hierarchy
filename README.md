@@ -19,15 +19,15 @@ And then execute:
 
 ## Usage
 
-Example tree:
+Example model:
 ```sh
 $ rails g model Item \
-    name:string \
-    path:string \
-    depth:integer \
-    position:integer \
-    parent:belongs_to \
-    children_count:integer
+  name:string \
+  path:string \
+  depth:integer \
+  position:integer \
+  parent:belongs_to \
+  children_count:integer
 ```
 ```ruby
 class Item < ActiveRecord::Base
@@ -36,12 +36,24 @@ class Item < ActiveRecord::Base
                 counter_cache: true,
                 dependent: :destroy
 end
+```
 
-foo = Item.create!(name: 'foo')
-bar = Item.create!(name: 'bar')
-qux = bar.children.create!(name: 'qux')
-baz = bar.children.create!(name: 'baz')
-quux = qux.children.create!(name: 'quux')
+or Mongoid document:
+```ruby
+class Item
+  include Mongoid::Document
+  include Mongoid::HasHierarchy
+
+  has_hierarchy path_part: :name,
+                depth_cache: true,
+                counter_cache: true,
+                dependent: :destroy
+
+  field :name,  type: String
+  field :path,  type: String
+  field :depth, type: Fixnum, default: 0
+  field :children_count, type: Fixnum, default: 0
+end
 ```
 
 Options:
@@ -58,6 +70,12 @@ dependent      - optional, :dependent option for children association.
 
 Operations on the tree:
 ```ruby
+foo = Item.create!(name: 'foo')
+bar = Item.create!(name: 'bar')
+qux = bar.children.create!(name: 'qux')
+baz = bar.children.create!(name: 'baz')
+quux = qux.children.create!(name: 'quux')
+
 Item.roots
 # => [ foo, bar ]
 
@@ -88,7 +106,7 @@ bar.root?            # => true
 qux.leaf?            # => false
 ```
 
-Path cache is required for following methods:
+Ancestors/descendants (requires path_cache):
 ```ruby
 bar.root_of?(quux)      # => true
 bar.ancestor_of?(quux)  # => true
@@ -100,6 +118,9 @@ bar.descendants         # => [ qux, quux, baz ]
 
 Ordering (see [has_order](https://github.com/kolesnikovde/has_order)):
 ```ruby
+bar.previous_siblings  # => [ foo, quux ]
+foo.next_siblings      # => [ quux, bar ]
+
 foo.move_after(quux)
 Item.ordered.tree
 # => {
