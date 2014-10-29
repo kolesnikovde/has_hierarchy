@@ -279,10 +279,24 @@ end
 shared_examples 'ordered tree' do
   include_context 'example tree'
 
-  it '#move_after' do
+  before(:each) do
     quux.move_after(foo)
     reload_items
+  end
 
+  describe '#previous_siblings' do
+    it 'returns siblings with smaller position' do
+      expect(bar.previous_siblings).to match_array([ foo, quux ])
+    end
+  end
+
+  describe '#next_siblings' do
+    it 'returns siblings with greater position' do
+      expect(foo.next_siblings).to match_array([ quux, bar ])
+    end
+  end
+
+  it '#move_after' do
     expect(described_class.ordered.tree).to be_arranged_like({
       foo => {},
       quux => {},
@@ -299,11 +313,10 @@ shared_examples 'ordered tree' do
 
     expect(described_class.ordered.tree).to be_arranged_like({
       foo => {},
+      baz => {},
+      quux => {},
       bar => {
-        qux => {
-          baz => {},
-          quux => {},
-        }
+        qux => {}
       }
     })
   end
