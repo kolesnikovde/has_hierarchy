@@ -1,22 +1,12 @@
 require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
-require 'sqlite3'
-require 'active_record'
+orm_adapter = ENV['HAS_HIERARCHY_ORM']
 
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
-ActiveRecord::Schema.verbose = false
-
-require File.expand_path('../db/schema.rb', __FILE__)
-require File.expand_path('../support/models.rb', __FILE__)
-require File.expand_path('../support/matchers.rb', __FILE__)
-
-RSpec.configure do |config|
-  config.around :each do |example|
-    ActiveRecord::Base.transaction do
-      example.run
-
-      raise ActiveRecord::Rollback
-    end
-  end
+unless %w[active_record mongoid].include?(orm_adapter)
+  raise 'Unknown ORM.'
 end
+
+require "support/orm/#{orm_adapter}/setup"
+require 'support/models'
+require 'support/matchers'

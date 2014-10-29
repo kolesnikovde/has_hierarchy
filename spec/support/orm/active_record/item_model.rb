@@ -10,3 +10,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.belongs_to :parent
   end
 end
+
+class Item < ActiveRecord::Base
+  scope :alphabetic, ->{ order('name asc') }
+end

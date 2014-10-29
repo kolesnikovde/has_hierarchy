@@ -5,6 +5,16 @@ rvm:
   - 2.0.0
   - 2.1.0
 
+env:
+  - HAS_HIERARCHY_ORM=mongoid
+  - HAS_HIERARCHY_ORM=active_record
+
+matrix:
+  fast_finish: true
+
+services:
+  - mongodb
+
 addons:
   code_climate:
     repo_token: cf2619e78bacdbeab2c8c1e2e1f37ff6c47b06374ee717f38cbbcdafaceeeb59

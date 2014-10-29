@@ -5,10 +5,15 @@ module HasHierarchy
     extend ActiveSupport::Concern
 
     included do
+      include Mongoid::HasOrder if defined?(Mongoid)
+
       options = has_hierarchy_options
 
       has_order scope: Array(options[:scope]).concat([ :parent_id ]),
                 position_column: options[:order]
+
+      alias_method :previous_siblings, :lower
+      alias_method :next_siblings, :higher
 
       include HasOrderOverrides
     end

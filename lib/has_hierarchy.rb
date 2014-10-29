@@ -3,6 +3,8 @@ require 'has_hierarchy/version'
 require 'has_hierarchy/order'
 require 'has_hierarchy/path'
 require 'has_hierarchy/depth_cache'
+require 'has_hierarchy/counter_cache'
+require 'has_hierarchy/orm_adapter'
 
 module HasHierarchy
   DEFAULT_OPTIONS = {
@@ -22,13 +24,13 @@ module HasHierarchy
 
     setup_has_hierarchy_options(options)
 
-    include Order      if options[:order]
-    include Path       if options[:path_cache]
-    include DepthCache if options[:depth_cache]
+    include Order        if options[:order]
+    include Path         if options[:path_cache]
+    include DepthCache   if options[:depth_cache]
+    include CounterCache if options[:counter_cache]
 
     belongs_to :parent, class_name: self.name,
-                        inverse_of: :children,
-                        counter_cache: options[:counter_cache]
+                        inverse_of: :children
 
     has_many :children, class_name: self.name,
                         foreign_key: :parent_id,
@@ -36,6 +38,8 @@ module HasHierarchy
                         dependent: options[:dependent]
 
     define_tree_scope(options[:scope])
+
+    include HasHierarchy::OrmAdapter
   end
 
   module ClassMethods
@@ -72,6 +76,7 @@ module HasHierarchy
       cattr_accessor(:path_part_column) { options[:path_part] }
       cattr_accessor(:path_separator) { options[:path_separator] }
       cattr_accessor(:depth_column) { options[:depth_cache] }
+      cattr_accessor(:children_count_column) { options[:counter_cache] }
       cattr_accessor(:has_hierarchy_options) { options }
     end
 
@@ -112,10 +117,6 @@ module HasHierarchy
       parent_id == node.parent_id and id != node.id
     end
 
-    def siblings
-      tree_scope.where(siblings_conditions)
-    end
-
     def move_children_to_parent
       children.each do |c|
         c.parent = self.parent
@@ -128,13 +129,5 @@ module HasHierarchy
     def tree_scope
       self.class.tree_scope(self)
     end
-
-    def siblings_conditions
-      t = self.class.arel_table
-
-      t[:parent_id].eq(parent_id).and(t[:id].not_eq(id))
-    end
   end
 end
-
-ActiveRecord::Base.extend(HasHierarchy)
