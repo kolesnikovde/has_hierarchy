@@ -7,6 +7,10 @@ module HasHierarchy
       after_destroy :decrement_children_counter, if: :parent_id?
     end
 
+    def leaf?
+      self[children_count_column] == 0
+    end
+
     protected
 
     def update_children_counter

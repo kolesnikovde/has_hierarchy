@@ -94,11 +94,7 @@ module HasHierarchy
 
   module InstanceMethods
     def leaf?
-      if counter_cache = has_hierarchy_options[:counter_cache]
-        self[counter_cache] == 0
-      else
-        children.empty?
-      end
+      children.count == 0
     end
 
     def root?
