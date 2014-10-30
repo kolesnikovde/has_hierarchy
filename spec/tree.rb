@@ -225,8 +225,8 @@ shared_examples 'materialized path' do
     let(:new_ancestors) { [ foo ] }
 
     before do
-      baz.parent = new_parent
-      baz.save!
+      qux.parent = new_parent
+      qux.save!
       reload_items
     end
 
@@ -241,16 +241,12 @@ shared_examples 'materialized path' do
     end
 
     it 'changes ancestors' do
-      expect(baz.ancestors).to match_array(new_ancestors)
+      expect(qux.ancestors).to match_array(new_ancestors)
     end
 
     it 'applies to all descendants' do
-      baz.children.each do |child|
+      qux.children.each do |child|
         expect(child).to be_descendant_of(new_parent)
-
-        child.children.each do |subchild|
-          expect(subchild).to be_descendant_of(new_parent)
-        end
       end
     end
   end
