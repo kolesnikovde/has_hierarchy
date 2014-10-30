@@ -3,8 +3,7 @@ module HasHierarchy
     extend ActiveSupport::Concern
 
     included do
-      before_create :populate_path
-      before_update :rebuild_subtree, if: :need_to_rebuild_subtree?
+      before_save :rebuild_subtree, if: :need_to_rebuild_subtree?
     end
 
     module ClassMethods
@@ -71,15 +70,16 @@ module HasHierarchy
     end
 
     def populate_path(path = nil)
-      self.path = root? ? '' : (path || parent.path_for_children)
     end
 
     def rebuild_subtree(path = nil)
-      populate_path(path)
+      self.path = root? ? '' : (path || parent.path_for_children)
 
-      children.each do |child|
-        child.rebuild_subtree(path_for_children)
-        child.save!
+      unless new_record?
+        children.each do |child|
+          child.rebuild_subtree(path_for_children)
+          child.save!
+        end
       end
     end
 
