@@ -178,12 +178,9 @@ shared_examples 'materialized path' do
 
   describe '#subtree' do
     it 'returns node with descendants' do
-      expect(bar.subtree.tree).to be_arranged_like({
-        bar => {
-          qux => {
-            quux => {}
-          },
-          baz => {}
+      expect(qux.subtree.tree).to be_arranged_like({
+        qux => {
+          quux => {}
         }
       })
     end
@@ -280,8 +277,13 @@ shared_examples 'tree with cached depth' do
 
   it 'stores node level' do
     expect(described_class.where(depth: 0)).to match_array([ foo, bar ])
-    expect(described_class.where(depth: 1)).to match_array([ qux, baz ])
-    expect(described_class.where(depth: 2)).to match_array([ quux ])
+
+    expect(described_class.where(depth: 1...3).tree).to be_arranged_like({
+      qux => {
+        quux => {}
+      },
+      baz => {}
+    })
   end
 end
 

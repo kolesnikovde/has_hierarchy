@@ -49,13 +49,11 @@ module HasHierarchy
 
     def tree
       nodes = all
-      index = {}
       tree_hash = {}
 
-      nodes.each do |node|
-        struct = node.root? ? tree_hash : (index[node.parent_id] ||= {})
-        struct[node] = (index[node.id] ||= {})
-      end
+      index = {}
+      nodes.each{ |n| index[n.id] = {} }
+      nodes.each{ |n| (index[n.parent_id] || tree_hash)[n] = index[n.id] }
 
       tree_hash
     end
