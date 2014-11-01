@@ -18,7 +18,7 @@ shared_examples 'adjacency list' do
   include_context 'example tree'
 
   describe '.tree' do
-    it 'arranges tree' do
+    it 'arranges tree to hash' do
       expect(described_class.tree).to be_arranged_like({
         foo => {},
         bar => {
@@ -40,6 +40,28 @@ shared_examples 'adjacency list' do
         },
         foo => {}
       })
+    end
+  end
+
+  describe '.flat_tree' do
+    it 'arranges tree to array' do
+      expect(described_class.flat_tree).to eq([
+        foo,
+        bar,
+          qux,
+            quux,
+          baz
+      ])
+    end
+
+    it 'allows custom order' do
+      expect(described_class.alphabetic.flat_tree).to eq([
+        bar,
+          baz,
+          qux,
+            quux,
+        foo
+      ])
     end
   end
 

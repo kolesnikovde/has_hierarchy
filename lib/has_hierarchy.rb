@@ -50,14 +50,26 @@ module HasHierarchy
     def tree
       nodes = all
       index = {}
-      arranged = {}
+      tree_hash = {}
 
       nodes.each do |node|
-        struct = node.root? ? arranged : (index[node.parent_id] ||= {})
+        struct = node.root? ? tree_hash : (index[node.parent_id] ||= {})
         struct[node] = (index[node.id] ||= {})
       end
 
-      arranged
+      tree_hash
+    end
+
+    def flat_tree(tree_hash = nil)
+      tree_hash ||= tree
+      list = []
+
+      tree_hash.each do |node, children|
+        list << node
+        list += flat_tree(children) unless children.empty?
+      end
+
+      list
     end
 
     protected
