@@ -90,6 +90,9 @@ Item.ordered.tree
 #   }
 # }
 
+Item.ordered.flat_tree
+# => [ foo, bar, qux, quux, baz ]
+
 quux = Item.find_by_path('bar/qux/quux')
 # => quux
 quux.full_path
