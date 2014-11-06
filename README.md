@@ -7,6 +7,12 @@
 
 Tree behavior for ActiveRecord models and Mongoid documents.
 
+## Features
+
+- Sophisticated adjacency list with optional materialized path, user sorting, depth cache and more.
+- ActiveRecord 4.x and Mongoid 4.x support.
+- Convenient scope-oriented API.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -64,7 +70,7 @@ path_cache     - optional, column name or boolean, default :path.
 path_part      - optional, column name, default :id.
 path_separator - optional, string, default '/'.
 depth_cache    - optional, column name or boolean, default :depth.
-counter_cache  - optional, :counter_cache option for parent association.
+counter_cache  - optional, column name or boolean, default :children_count.
 dependent      - optional, :dependent option for children association.
 ```
 
