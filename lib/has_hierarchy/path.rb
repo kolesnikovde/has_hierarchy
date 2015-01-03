@@ -9,7 +9,7 @@ module HasHierarchy
     module ClassMethods
       def find_by_path(path)
         sep = path_separator
-        parts = path.gsub(/\#{sep}*$/, '').split(sep)
+        parts = path.split(sep).reject(&:blank?)
         part = parts.pop
         path = parts.length > 0 ? parts.join(sep) + sep : ''
 
